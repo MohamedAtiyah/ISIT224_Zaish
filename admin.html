@@ -106,6 +106,241 @@
   .kpi-val { font-size: 1.8rem; font-weight: 600; margin: 0.5rem 0; }
   .kpi-label { font-size: 0.75rem; text-transform: uppercase; color: var(--grey-500); letter-spacing: 0.05em; }
 
+  /* ANALYTICS */
+  .analytics-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .analytics-chips {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.1rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--grey-300);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--grey-700);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .chip.is-active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--white);
+  }
+  .analytics-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--grey-150);
+    border-radius: 8px;
+    padding: 1.15rem;
+  }
+  .metric-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--grey-500);
+  }
+  .metric-change.up { color: var(--green); }
+  .metric-change.down { color: var(--red); }
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: 1.45fr 0.95fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .panel-title {
+    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--grey-500);
+    font-weight: 600;
+  }
+  .panel-subtitle {
+    margin: 0 0 1rem;
+    font-size: 0.85rem;
+    color: var(--grey-500);
+    max-width: none;
+  }
+  .chart-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--grey-150);
+    border-radius: 8px;
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    padding: 0.9rem;
+  }
+  .trend-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--grey-500);
+  }
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .legend i {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    display: inline-block;
+  }
+  .legend .ink { background: var(--ink); }
+  .legend .denim { background: var(--denim); }
+  .legend .red { background: var(--red); }
+  .analytics-bottom {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 1rem;
+  }
+  .analytics-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .analytics-table th {
+    text-align: left;
+    padding: 0.9rem 0;
+    background: transparent;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .analytics-table td {
+    padding: 0.9rem 0;
+    border-top: none;
+    border-bottom: 1px solid var(--grey-150);
+    font-size: 0.9rem;
+  }
+  .analytics-table tr:last-child td { border-bottom: none; }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.55rem;
+    border-radius: 999px;
+    background: var(--grey-100);
+    color: var(--grey-700);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .donut-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+  .donut {
+    width: 146px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(var(--ink) 0 44%, var(--denim) 44% 69%, var(--red) 69% 84%, var(--grey-300) 84% 100%);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .donut::after {
+    content: "";
+    position: absolute;
+    inset: 23px;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--grey-150);
+  }
+  .mix-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .mix-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.65rem;
+    align-items: center;
+  }
+  .swatch {
+    width: 0.72rem;
+    height: 0.72rem;
+    border-radius: 50%;
+  }
+  .mix-name { font-size: 0.82rem; color: var(--grey-700); }
+  .mix-value { font-size: 0.82rem; font-weight: 600; }
+  .bar-list { display: flex; flex-direction: column; gap: 0.95rem; }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 42px;
+    gap: 0.8rem;
+    align-items: center;
+  }
+  .bar-name { font-size: 0.82rem; color: var(--grey-700); }
+  .bar-track {
+    height: 8px;
+    background: var(--grey-150);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 100%; background: var(--ink); }
+  .bar-fill.denim { background: var(--denim); }
+  .bar-fill.red { background: var(--red); }
+  .insight-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+  .insight-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: start;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .insight-item:last-child { padding-bottom: 0; border-bottom: none; }
+  .insight-item strong {
+    display: block;
+    font-size: 0.83rem;
+    margin-bottom: 0.2rem;
+  }
+  .insight-item p {
+    margin: 0;
+    max-width: none;
+    font-size: 0.82rem;
+  }
+  @media (max-width: 1020px) {
+    .analytics-kpis, .analytics-grid, .analytics-bottom { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .bar-row { grid-template-columns: 1fr; gap: 0.35rem; }
+    .donut-row { grid-template-columns: 1fr; }
+  }
+
   /* TOGGLES & INPUTS */
   .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
   .switch input { opacity: 0; width: 0; height: 0; }
@@ -154,7 +389,8 @@
 <aside class="sidebar">
   <div class="sidebar-logo">ZAISH ADMIN</div>
   <ul class="nav-tabs">
-    <li><button class="nav-btn active" data-tab="dashboard">Dashboard</button></li>
+    <li><button class="nav-btn active" data-tab="analytics">Analytics</button></li>
+    <li><button class="nav-btn" data-tab="dashboard">Dashboard</button></li>
     <li><button class="nav-btn" data-tab="product-recs">Product Recs</button></li>
     <li><button class="nav-btn" data-tab="workshop-recs">Workshop Recs</button></li>
     <li><button class="nav-btn" data-tab="email-crm">Email & CRM</button></li>
@@ -162,9 +398,190 @@
 </aside>
 
 <main class="main-content">
+
+  <!-- ANALYTICS -->
+  <section id="analytics" class="panel active">
+    <h1>Analytics</h1>
+    <div class="analytics-toolbar">
+      <div>
+        <div class="kpi-label">Executive View</div>
+        <h2 style="margin:0;">Power BI Style Overview</h2>
+      </div>
+      <div class="analytics-chips" aria-label="Dashboard filters">
+        <span class="chip is-active">Last 30 Days</span>
+        <span class="chip">Online</span>
+        <span class="chip">UAE</span>
+        <span class="chip">Workshops</span>
+      </div>
+    </div>
+
+    <div class="analytics-kpis">
+      <div class="metric-card">
+        <div class="kpi-label">Revenue</div>
+        <div class="kpi-val">AED 128.4K</div>
+        <div class="metric-meta"><span class="metric-change up">+12.8%</span><span>vs previous period</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="kpi-label">Orders</div>
+        <div class="kpi-val">312</div>
+        <div class="metric-meta"><span class="metric-change up">+8.4%</span><span>conversion steady</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="kpi-label">AOV</div>
+        <div class="kpi-val">AED 411</div>
+        <div class="metric-meta"><span class="metric-change up">+5.1%</span><span>basket depth: 2.3</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="kpi-label">Workshop Leads</div>
+        <div class="kpi-val">19</div>
+        <div class="metric-meta"><span class="metric-change down">-1.3%</span><span>2 pending follow-ups</span></div>
+      </div>
+    </div>
+
+    <div class="analytics-grid">
+      <div class="card">
+        <div class="panel-title">Revenue Trend</div>
+        <p class="panel-subtitle">Weekly performance across ecommerce and workshop bookings.</p>
+        <div class="chart-wrap">
+          <svg class="trend-svg" viewBox="0 0 900 380" role="img" aria-label="Revenue trend over eight weeks">
+            <title>Revenue trend over eight weeks</title>
+            <defs>
+              <linearGradient id="adminAreaFill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#111111" stop-opacity=".18" />
+                <stop offset="100%" stop-color="#111111" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="900" height="380" fill="white" />
+            <g stroke="#ececea" stroke-width="1">
+              <line x1="60" y1="55" x2="860" y2="55" />
+              <line x1="60" y1="120" x2="860" y2="120" />
+              <line x1="60" y1="185" x2="860" y2="185" />
+              <line x1="60" y1="250" x2="860" y2="250" />
+              <line x1="60" y1="315" x2="860" y2="315" />
+            </g>
+            <path d="M60 270 L160 250 L260 255 L360 210 L460 180 L560 165 L660 140 L760 110 L860 95 L860 340 L60 340 Z" fill="url(#adminAreaFill)" />
+            <polyline points="60,270 160,250 260,255 360,210 460,180 560,165 660,140 760,110 860,95" fill="none" stroke="#111111" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+            <polyline points="60,295 160,300 260,288 360,275 460,255 560,240 660,230 760,214 860,205" fill="none" stroke="#33445e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="860" cy="95" r="7" fill="#111111" />
+            <circle cx="860" cy="205" r="6" fill="#33445e" />
+            <g fill="#8a8a8a" font-size="18" font-family="Inter, Arial, sans-serif">
+              <text x="60" y="365">W1</text>
+              <text x="156" y="365">W2</text>
+              <text x="256" y="365">W3</text>
+              <text x="356" y="365">W4</text>
+              <text x="456" y="365">W5</text>
+              <text x="556" y="365">W6</text>
+              <text x="656" y="365">W7</text>
+              <text x="756" y="365">W8</text>
+            </g>
+          </svg>
+        </div>
+        <div class="legend">
+          <span><i class="ink"></i>Revenue</span>
+          <span><i class="denim"></i>Workshop Revenue</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="panel-title">Channel Mix</div>
+        <p class="panel-subtitle">Where the orders are coming from this month.</p>
+        <div class="donut-row">
+          <div class="donut" aria-hidden="true"></div>
+          <div class="mix-list">
+            <div class="mix-row"><span class="swatch" style="background:var(--ink);"></span><span class="mix-name">Direct</span><span class="mix-value">48%</span></div>
+            <div class="mix-row"><span class="swatch" style="background:var(--denim);"></span><span class="mix-name">Search</span><span class="mix-value">24%</span></div>
+            <div class="mix-row"><span class="swatch" style="background:var(--red);"></span><span class="mix-name">Email</span><span class="mix-value">14%</span></div>
+            <div class="mix-row"><span class="swatch" style="background:var(--grey-300);"></span><span class="mix-name">Referral</span><span class="mix-value">14%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-bottom">
+      <div class="card">
+        <div class="panel-title">Top Products</div>
+        <p class="panel-subtitle">Best sellers by revenue, shown like a ranked matrix.</p>
+        <table class="analytics-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Orders</th>
+              <th>Revenue</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Atelier Straight Jean</td>
+              <td>84</td>
+              <td>AED 46.1K</td>
+              <td><span class="pill">Leading</span></td>
+            </tr>
+            <tr>
+              <td>Upcycled Patch Jacket</td>
+              <td>56</td>
+              <td>AED 38.6K</td>
+              <td><span class="pill">High Margin</span></td>
+            </tr>
+            <tr>
+              <td>Folding-Table Wide Leg</td>
+              <td>41</td>
+              <td>AED 26.7K</td>
+              <td><span class="pill">Stable</span></td>
+            </tr>
+            <tr>
+              <td>Denim Design Lab</td>
+              <td>19</td>
+              <td>AED 17.0K</td>
+              <td><span class="pill">Upsell</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="panel-title">Workshop Pipeline</div>
+        <p class="panel-subtitle">Lead quality and stage mix for the next intake window.</p>
+        <div class="bar-list">
+          <div class="bar-row">
+            <span class="bar-name">Qualified</span>
+            <div class="bar-track"><div class="bar-fill" style="width:72%;"></div></div>
+            <span class="mix-value">72%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Proposal</span>
+            <div class="bar-track"><div class="bar-fill denim" style="width:54%;"></div></div>
+            <span class="mix-value">54%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Negotiation</span>
+            <div class="bar-track"><div class="bar-fill red" style="width:31%;"></div></div>
+            <span class="mix-value">31%</span>
+          </div>
+        </div>
+
+        <div class="insight-list">
+          <div class="insight-item">
+            <div>
+              <strong>Dubai campuses are converting fastest.</strong>
+              <p>Most workshop demand comes from institutions booking within 14 days.</p>
+            </div>
+            <span class="pill">Trend</span>
+          </div>
+          <div class="insight-item">
+            <div>
+              <strong>Email drives the highest-value basket.</strong>
+              <p>Campaign traffic has the strongest AOV but the smallest volume.</p>
+            </div>
+            <span class="pill">Signal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
   
   <!-- DASHBOARD -->
-  <section id="dashboard" class="panel active">
+  <section id="dashboard" class="panel">
     <h1>Dashboard</h1>
     <div class="grid">
       <div class="card">
@@ -405,7 +822,7 @@
 
 // --- STATE ---
 let state = {
-  activeTab: 'dashboard',
+  activeTab: 'analytics',
   systems: {
     prod: true,
     work: true,
