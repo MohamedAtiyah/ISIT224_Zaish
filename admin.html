@@ -333,8 +333,129 @@
     max-width: none;
     font-size: 0.82rem;
   }
+  /* INVENTORY */
+  .inventory-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .inventory-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .inventory-table th {
+    text-align: left;
+    padding: 0.9rem 0;
+    background: transparent;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .inventory-table td {
+    padding: 0.9rem 0;
+    border-top: none;
+    border-bottom: 1px solid var(--grey-150);
+    vertical-align: middle;
+    font-size: 0.9rem;
+  }
+  .inventory-table tr:last-child td { border-bottom: none; }
+  .inventory-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .inventory-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--grey-150);
+  }
+  .inventory-row:last-child { padding-bottom: 0; border-bottom: none; }
+  .inventory-row strong {
+    display: block;
+    font-size: 0.83rem;
+    margin-bottom: 0.15rem;
+  }
+  .inventory-row p {
+    margin: 0;
+    font-size: 0.81rem;
+    max-width: none;
+  }
+  .stage-track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.4rem;
+    margin-top: 0.65rem;
+  }
+  .stage {
+    min-height: 2.3rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--grey-150);
+    background: var(--grey-100);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--grey-700);
+    text-align: center;
+  }
+  .stage.is-active {
+    background: var(--ink);
+    color: var(--white);
+    border-color: var(--ink);
+  }
+  .bar-mini {
+    height: 8px;
+    background: var(--grey-150);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .bar-mini-fill {
+    height: 100%;
+    background: var(--ink);
+  }
+  .bar-mini-fill.denim { background: var(--denim); }
+  .bar-mini-fill.red { background: var(--red); }
+  .inventory-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tiny-action {
+    border: 1px solid var(--grey-300);
+    background: var(--white);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 0.35rem 0.6rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .tiny-action:hover {
+    background: var(--ink);
+    color: var(--white);
+    border-color: var(--ink);
+  }
   @media (max-width: 1020px) {
-    .analytics-kpis, .analytics-grid, .analytics-bottom { grid-template-columns: 1fr; }
+    .analytics-kpis, .analytics-grid, .analytics-bottom,
+    .inventory-grid, .inventory-kpis { grid-template-columns: 1fr; }
   }
   @media (max-width: 560px) {
     .bar-row { grid-template-columns: 1fr; gap: 0.35rem; }
@@ -390,6 +511,7 @@
   <div class="sidebar-logo">ZAISH ADMIN</div>
   <ul class="nav-tabs">
     <li><button class="nav-btn active" data-tab="analytics">Analytics</button></li>
+    <li><button class="nav-btn" data-tab="inventory">Inventory</button></li>
     <li><button class="nav-btn" data-tab="dashboard">Dashboard</button></li>
     <li><button class="nav-btn" data-tab="product-recs">Product Recs</button></li>
     <li><button class="nav-btn" data-tab="workshop-recs">Workshop Recs</button></li>
@@ -575,6 +697,136 @@
             </div>
             <span class="pill">Signal</span>
           </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section id="inventory" class="panel">
+    <h1>Inventory</h1>
+    <div class="inventory-toolbar">
+      <div>
+        <div class="kpi-label">Sales Cycle Control</div>
+        <h2 style="margin:0;">Product Tracking</h2>
+      </div>
+      <div class="analytics-chips" aria-label="Inventory filters">
+        <span class="chip is-active">All SKUs</span>
+        <span class="chip">Low Stock</span>
+        <span class="chip">Allocated</span>
+        <span class="chip">Sold</span>
+      </div>
+    </div>
+
+    <div class="inventory-kpis">
+      <div class="metric-card">
+        <div class="kpi-label">Total SKUs</div>
+        <div class="kpi-val" id="inventory-skus">12</div>
+        <div class="metric-meta"><span class="metric-change up">+2</span><span>this month</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="kpi-label">Units In Stock</div>
+        <div class="kpi-val" id="inventory-stock">1,284</div>
+        <div class="metric-meta"><span class="metric-change up">78%</span><span>available</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="kpi-label">Low Stock</div>
+        <div class="kpi-val" id="inventory-low">3</div>
+        <div class="metric-meta"><span class="metric-change down">Action</span><span>reorder now</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="kpi-label">Sell-Through</div>
+        <div class="kpi-val" id="inventory-sellthrough">61%</div>
+        <div class="metric-meta"><span class="metric-change up">+4.2%</span><span>vs last cycle</span></div>
+      </div>
+    </div>
+
+    <div class="inventory-grid">
+      <div class="card">
+        <div class="panel-title">SKU Tracking</div>
+        <p class="panel-subtitle">Track each product through receiving, allocation, sale, and replenishment.</p>
+        <table class="inventory-table">
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Product</th>
+              <th>Cycle Stage</th>
+              <th>Stock</th>
+              <th>Next Action</th>
+            </tr>
+          </thead>
+          <tbody id="inventory-body"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="panel-title">Cycle Stages</div>
+        <p class="panel-subtitle">Live status of products moving through the sales cycle.</p>
+        <div class="stage-track" aria-label="Sales cycle stages">
+          <span class="stage is-active">Received</span>
+          <span class="stage is-active">Allocated</span>
+          <span class="stage is-active">Listed</span>
+          <span class="stage is-active">Sold</span>
+          <span class="stage">Reorder</span>
+        </div>
+
+        <div style="margin-top:1rem;" class="inventory-list">
+          <div class="inventory-row">
+            <div>
+              <strong>Atelier Straight Jean</strong>
+              <p>Communicated to sales, listed in-store, and 84% through sell-through.</p>
+            </div>
+            <span class="pill">Priority</span>
+          </div>
+          <div class="inventory-row">
+            <div>
+              <strong>Upcycled Patch Jacket</strong>
+              <p>Low stock alert sent to procurement and retail teams.</p>
+            </div>
+            <span class="pill">Reorder</span>
+          </div>
+          <div class="inventory-row">
+            <div>
+              <strong>Denim Design Lab Kits</strong>
+              <p>Reserved for workshop bookings and removed from public stock.</p>
+            </div>
+            <span class="pill">Allocated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inventory-grid">
+      <div class="card">
+        <div class="panel-title">Communication Log</div>
+        <p class="panel-subtitle">Keep sales, operations, and fulfillment aligned across the cycle.</p>
+        <div class="inventory-list" id="inventory-log"></div>
+      </div>
+
+      <div class="card">
+        <div class="panel-title">Low Stock Alerts</div>
+        <p class="panel-subtitle">Products needing a decision before they interrupt sales.</p>
+        <div class="bar-list">
+          <div class="bar-row">
+            <span class="bar-name">Upcycled Patch Jacket</span>
+            <div class="bar-track"><div class="bar-fill red" style="width:18%;"></div></div>
+            <span class="mix-value">18</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Denim Bucket Hat</span>
+            <div class="bar-track"><div class="bar-fill denim" style="width:34%;"></div></div>
+            <span class="mix-value">34</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-name">Folding-Table Wide Leg</span>
+            <div class="bar-track"><div class="bar-fill" style="width:57%;"></div></div>
+            <span class="mix-value">57</span>
+          </div>
+        </div>
+        <div class="inventory-actions" style="margin-top:1rem;">
+          <button class="tiny-action" onclick="pushInventoryUpdate('Sales team notified on low stock items.')">Notify Sales</button>
+          <button class="tiny-action" onclick="pushInventoryUpdate('Procurement asked to replenish the alert list.')">Notify Procurement</button>
+          <button class="tiny-action" onclick="pushInventoryUpdate('Fulfillment updated with current allocation status.')">Update Fulfillment</button>
         </div>
       </div>
     </div>
@@ -866,6 +1118,19 @@ let state = {
     { id: 2, name: 'Workshop Recap', segment: 'Workshop Attendees', subject: 'Keep the craft alive.', status: 'Scheduled' },
     { id: 3, name: 'B2B: Corporate Gifting', segment: 'Corporate Partners', subject: 'Gifts with impact.', status: 'Draft' },
     { id: 4, name: 'Campus Ambassors 2026', segment: 'University Students', subject: 'Lead the denim revolution.', status: 'Draft' }
+  ],
+  inventory: [
+    { sku: 'ZAI-001', product: 'Atelier Straight Jean', stage: 'Listed', stock: 84, reserved: 12, sold: 196, action: 'Monitor sell-through', cycle: 84 },
+    { sku: 'ZAI-002', product: 'Upcycled Patch Jacket', stage: 'Reorder', stock: 18, reserved: 5, sold: 72, action: 'Replenish now', cycle: 92 },
+    { sku: 'ZAI-003', product: 'Folding-Table Wide Leg', stage: 'Allocated', stock: 57, reserved: 18, sold: 108, action: 'Hold for web orders', cycle: 72 },
+    { sku: 'ZAI-004', product: 'Denim Design Lab Kit', stage: 'Reserved', stock: 24, reserved: 24, sold: 41, action: 'Locked to workshops', cycle: 100 },
+    { sku: 'ZAI-005', product: 'Denim Bucket Hat', stage: 'Receiving', stock: 34, reserved: 6, sold: 29, action: 'Check inbound ETA', cycle: 41 }
+  ],
+  inventoryLog: [
+    { time: '15 mins ago', msg: 'Sales updated Atelier Straight Jean allocation for online orders.' },
+    { time: '1 hour ago', msg: 'Procurement flagged Upcycled Patch Jacket for immediate reorder.' },
+    { time: '4 hours ago', msg: 'Fulfillment confirmed Denim Design Lab Kits reserved for workshop batch.' },
+    { time: 'Yesterday', msg: 'Retail floor and ecommerce stock counts reconciled.' }
   ]
 };
 
@@ -906,6 +1171,51 @@ function updateSystemStatus(sys, active) {
   
   const statusPill = active ? 'Active' : 'Paused';
   addActivity(`${sys.charAt(0).toUpperCase() + sys.slice(1)} System marked as ${statusPill}.`);
+}
+
+// --- INVENTORY ---
+function renderInventory() {
+  const body = document.getElementById('inventory-body');
+  body.innerHTML = state.inventory.map(item => `
+    <tr>
+      <td>${item.sku}</td>
+      <td>
+        <div style="font-weight:600;">${item.product}</div>
+        <div style="font-size:0.75rem; color: var(--grey-500);">Cycle ${item.cycle}% complete</div>
+      </td>
+      <td><span class="status-pill ${item.stage === 'Reorder' ? 'status-paused' : (item.stage === 'Listed' || item.stage === 'Allocated' ? 'status-active' : 'status-contacted')}">${item.stage}</span></td>
+      <td>${item.stock} / ${item.reserved} reserved</td>
+      <td>
+        <div>${item.action}</div>
+        <div class="bar-mini" style="margin-top:0.45rem;">
+          <div class="bar-mini-fill ${item.stage === 'Reorder' ? 'red' : (item.stage === 'Allocated' ? 'denim' : '')}" style="width:${item.cycle}%;"></div>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  const log = document.getElementById('inventory-log');
+  log.innerHTML = state.inventoryLog.map(item => `
+    <div class="inventory-row">
+      <div>
+        <strong>${item.msg}</strong>
+        <p>${item.time}</p>
+      </div>
+      <span class="pill">Logged</span>
+    </div>
+  `).join('');
+
+  document.getElementById('inventory-skus').textContent = state.inventory.length;
+  document.getElementById('inventory-stock').textContent = state.inventory.reduce((sum, item) => sum + item.stock, 0).toLocaleString();
+  document.getElementById('inventory-low').textContent = state.inventory.filter(item => item.stage === 'Reorder' || item.stock < 40).length;
+  const sellThrough = Math.round(state.inventory.reduce((sum, item) => sum + item.sold, 0) / state.inventory.reduce((sum, item) => sum + item.sold + item.stock, 0) * 100);
+  document.getElementById('inventory-sellthrough').textContent = `${sellThrough}%`;
+}
+
+function pushInventoryUpdate(message) {
+  state.inventoryLog.unshift({ time: 'Just now', msg: message });
+  renderInventory();
+  addActivity(message);
 }
 
 // --- PRODUCT RECS ---
@@ -1089,6 +1399,7 @@ function updateCampaignStatus(id, status) {
 
 // --- INITIALIZE ---
 renderActivity();
+renderInventory();
 renderProducts();
 renderWorkshops();
 renderCampaigns();
