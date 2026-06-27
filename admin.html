@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaish Denim — Admin Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #111111;
+    --grey-700: #4a4a4a;
+    --grey-500: #8a8a8a;
+    --grey-300: #d9d9d6;
+    --grey-150: #ececea;
+    --grey-100: #f4f3f1;
+    --white: #ffffff;
+    --red: #c8312b;
+    --denim: #33445e;
+    --green: #27ae60;
+    --sidebar-width: 240px;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--grey-100);
+    color: var(--ink);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--ink);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    flex-shrink: 0;
+  }
+  .sidebar-logo {
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+  }
+  .nav-tabs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .nav-tabs li {
+    margin-bottom: 0.5rem;
+  }
+  .nav-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--grey-500);
+    text-align: left;
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover {
+    color: var(--white);
+    background: rgba(255,255,255,0.05);
+  }
+  .nav-btn.active {
+    color: var(--white);
+    background: rgba(255,255,255,0.1);
+    font-weight: 500;
+  }
+
+  /* MAIN CONTENT */
+  .main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+  }
+  .panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .panel.active {
+    display: block;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 { font-weight: 300; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2rem; }
+  h2 { font-size: 1.2rem; margin-bottom: 1.5rem; }
+
+  /* CARDS & GRID */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+  .card { background: var(--white); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--grey-150); }
+  .kpi-val { font-size: 1.8rem; font-weight: 600; margin: 0.5rem 0; }
+  .kpi-label { font-size: 0.75rem; text-transform: uppercase; color: var(--grey-500); letter-spacing: 0.05em; }
+
+  /* TOGGLES & INPUTS */
+  .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--grey-300); transition: .4s; border-radius: 22px; }
+  .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: var(--ink); }
+  input:checked + .slider:before { transform: translateX(22px); }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; }
+  th { text-align: left; padding: 1rem; background: var(--grey-100); font-size: 0.8rem; text-transform: uppercase; color: var(--grey-500); }
+  td { padding: 1rem; border-top: 1px solid var(--grey-150); font-size: 0.9rem; }
+  .status-pill { padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
+  .status-pending { background: #fff4e5; color: #b7791f; }
+  .status-contacted { background: #e6fffa; color: #2c7a7b; }
+  .status-active { background: #e6fffa; color: #2c7a7b; }
+  .status-paused { background: #fff5f5; color: #c53030; }
+
+  /* BUTTONS */
+  .btn-sml { padding: 0.4rem 0.8rem; font-size: 0.8rem; border: 1px solid var(--ink); background: var(--ink); color: var(--white); cursor: pointer; border-radius: 4px; }
+  .btn-sml:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-outline-sml { background: transparent; color: var(--ink); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+  .modal { background: var(--white); padding: 2rem; border-radius: 8px; width: 500px; max-width: 90%; }
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--grey-700); }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.6rem; border: 1px solid var(--grey-300); border-radius: 4px; font-family: inherit; }
+
+  /* ACTIVITY FEED */
+  .feed { list-style: none; padding: 0; }
+  .feed-item { padding: 1rem 0; border-bottom: 1px solid var(--grey-150); font-size: 0.85rem; }
+  .feed-time { color: var(--grey-500); font-size: 0.75rem; margin-bottom: 0.2rem; }
+
+  /* LOADER */
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; margin-right: 5px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .paused-overlay { display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.8); z-index: 10; align-items: center; justify-content: center; flex-direction: column; border-radius: 8px; }
+  .panel-container { position: relative; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">ZAISH ADMIN</div>
+  <ul class="nav-tabs">
+    <li><button class="nav-btn active" data-tab="dashboard">Dashboard</button></li>
+    <li><button class="nav-btn" data-tab="product-recs">Product Recs</button></li>
+    <li><button class="nav-btn" data-tab="workshop-recs">Workshop Recs</button></li>
+    <li><button class="nav-btn" data-tab="email-crm">Email & CRM</button></li>
+  </ul>
+</aside>
+
+<main class="main-content">
+  
+  <!-- DASHBOARD -->
+  <section id="dashboard" class="panel active">
+    <h1>Dashboard</h1>
+    <div class="grid">
+      <div class="card">
+        <div class="kpi-label">Conversion Rate</div>
+        <div class="kpi-val" id="kpi-conv">3.2%</div>
+        <div style="font-size: 0.75rem; color: var(--green);">+0.4% vs last month</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Average Order Value</div>
+        <div class="kpi-val" id="kpi-aov">AED 412</div>
+        <div style="font-size: 0.75rem; color: var(--green);">+AED 12 vs last month</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Workshop Rebooking</div>
+        <div class="kpi-val" id="kpi-rebook">24%</div>
+        <div style="font-size: 0.75rem; color: var(--red);">-2% vs last month</div>
+      </div>
+      <div class="card">
+        <div class="kpi-label">Email Open Rate</div>
+        <div class="kpi-val" id="kpi-email">18.5%</div>
+        <div style="font-size: 0.75rem; color: var(--green);">+1.2% vs last month</div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+      <div class="card">
+        <h2>Recent AI Activity</h2>
+        <ul class="feed" id="activity-feed">
+          <!-- Feed items here -->
+        </ul>
+      </div>
+      <div class="card">
+        <h2>System Status</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span style="font-size: 0.9rem;">Product Rec Engine</span>
+          <label class="switch">
+            <input type="checkbox" id="status-prod" checked onchange="updateSystemStatus('prod', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <span style="font-size: 0.9rem;">Workshop AI Scout</span>
+          <label class="switch">
+            <input type="checkbox" id="status-work" checked onchange="updateSystemStatus('work', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.9rem;">Email Assistant</span>
+          <label class="switch">
+            <input type="checkbox" id="status-email" checked onchange="updateSystemStatus('email', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT RECS -->
+  <section id="product-recs" class="panel">
+    <h1>Product Recommendations</h1>
+    <div class="card" style="margin-bottom: 2rem;">
+      <div style="display: flex; gap: 3rem;">
+        <div>
+          <h3 style="font-size: 0.9rem; margin-bottom: 1rem;">Core Toggles</h3>
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <label class="switch"><input type="checkbox" id="toggle-like" checked onchange="toggleProductTable()"><span class="slider"></span></label>
+            <span style="font-size: 0.85rem;">"You might also like" on product pages</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <label class="switch"><input type="checkbox" id="toggle-new" checked onchange="toggleProductTable()"><span class="slider"></span></label>
+            <span style="font-size: 0.85rem;">Personalize New Arrivals</span>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size: 0.9rem; margin-bottom: 1rem;">Signals Used</h3>
+          <div style="display: flex; gap: 1.5rem;">
+            <label style="font-size: 0.85rem;"><input type="checkbox" class="signal-check" value="browsing" checked onchange="rerankProducts()"> Browsing</label>
+            <label style="font-size: 0.85rem;"><input type="checkbox" class="signal-check" value="purchase" checked onchange="rerankProducts()"> Purchase</label>
+            <label style="font-size: 0.85rem;"><input type="checkbox" class="signal-check" value="wishlist" checked onchange="rerankProducts()"> Wishlist</label>
+          </div>
+        </div>
+        <div style="margin-left: auto; text-align: right;">
+          <div style="font-size: 0.8rem; color: var(--grey-500); margin-bottom: 0.5rem;">Last trained: <span id="last-trained">2 hours ago</span></div>
+          <button class="btn-sml" id="retrain-btn" onclick="retrainProductAI()">Retrain Now</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-container">
+      <div id="product-paused" class="paused-overlay">
+        <h2 style="margin: 0;">Recommendations Paused</h2>
+        <p style="font-size: 0.9rem;">Enable toggles above to restore the engine.</p>
+      </div>
+      <div class="card">
+        <h2>Top Performing Recommendations</h2>
+        <table id="product-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Conversion Rate</th>
+              <th>Revenue Boost</th>
+            </tr>
+          </thead>
+          <tbody id="product-body">
+            <!-- Rows here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKSHOP RECS -->
+  <section id="workshop-recs" class="panel">
+    <h1>Workshop AI Scout</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <div style="display: flex; gap: 0.5rem;" id="workshop-filters">
+        <button class="btn-sml btn-outline-sml active" onclick="filterWorkshops('all')">All</button>
+        <button class="btn-sml btn-outline-sml" onclick="filterWorkshops('University')">Universities</button>
+        <button class="btn-sml btn-outline-sml" onclick="filterWorkshops('Corporate')">Corporates</button>
+      </div>
+      <button class="btn-sml" onclick="bulkOutreach()">Send Bulk Outreach</button>
+    </div>
+
+    <div class="panel-container">
+        <div id="workshop-paused" class="paused-overlay">
+            <h2 style="margin: 0;">Workshop Scouting Paused</h2>
+            <p style="font-size: 0.9rem;">Re-enable in Dashboard to continue outreach.</p>
+        </div>
+        <div class="card">
+            <table id="workshop-table">
+                <thead>
+                    <tr>
+                    <th>Institution</th>
+                    <th>Type</th>
+                    <th>Last Interaction</th>
+                    <th>AI Confidence</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="workshop-body">
+                    <!-- Rows here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </section>
+
+  <!-- EMAIL & CRM -->
+  <section id="email-crm" class="panel">
+    <h1>Email & CRM Assistant</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <h2 style="margin:0;">Campaigns</h2>
+      <button class="btn-sml" onclick="openCampaignModal()">Generate Campaign with AI</button>
+    </div>
+
+    <div class="panel-container">
+        <div id="email-paused" class="paused-overlay">
+            <h2 style="margin: 0;">Email Assistant Paused</h2>
+            <p style="font-size: 0.9rem;">Re-enable in Dashboard to manage campaigns.</p>
+        </div>
+        <div class="card">
+            <table id="campaign-table">
+                <thead>
+                    <tr>
+                    <th>Campaign Name</th>
+                    <th>Segment</th>
+                    <th>Subject Line</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="campaign-body">
+                    <!-- Rows here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- MODALS -->
+<div id="campaign-modal" class="modal-overlay">
+  <div class="modal">
+    <h2 style="margin-top:0;">New AI Campaign</h2>
+    <div class="form-group">
+      <label>Campaign Name</label>
+      <input type="text" id="camp-name" placeholder="e.g. Summer Solstice Drop">
+    </div>
+    <div class="form-group">
+      <label>Audience Segment</label>
+      <select id="camp-segment">
+        <option>All Customers</option>
+        <option>Repeat Buyers</option>
+        <option>Workshop Attendees</option>
+        <option>New Signups</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Occasion / Theme</label>
+      <textarea id="camp-theme" placeholder="e.g. Celebrate the longest day of the year with breezy denim."></textarea>
+    </div>
+    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+      <button class="btn-sml btn-outline-sml" onclick="closeCampaignModal()">Cancel</button>
+      <button class="btn-sml" id="generate-camp-btn" onclick="generateCampaign()">Generate & Draft</button>
+    </div>
+  </div>
+</div>
+
+<div id="workshop-detail-modal" class="modal-overlay">
+    <div class="modal">
+        <h2 id="modal-inst-name" style="margin-top:0;">Institution Name</h2>
+        <div id="ai-reasons">
+            <h3 style="font-size: 0.9rem; color: var(--grey-500);">AI RECOMMENDATION REASONS:</h3>
+            <ul id="reasons-list" style="font-size: 0.9rem; line-height: 1.6;">
+            </ul>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+            <button class="btn-sml" onclick="closeWorkshopModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * ZAISH ADMIN INTERACTIVE LAYER
+ * 
+ * PLACEHOLDERS FOR FUTURE AI/BACKEND INTEGRATION:
+ * 1. draftCampaignCopy() - Placeholder for LLM generation of email content.
+ * 2. getAIWorkshopReasons() - Placeholder for AI-generated reasoning for leads.
+ * 3. updateSystemState() - Placeholder for API calls to sync settings to server.
+ * 4. fetchDashboardData() - Placeholder for real-time KPI and activity fetching.
+ * 5. retrainProductModel() - Placeholder for triggering a background ML training job.
+ */
+
+// --- STATE ---
+let state = {
+  activeTab: 'dashboard',
+  systems: {
+    prod: true,
+    work: true,
+    email: true
+  },
+  kpis: {
+    conv: 3.2,
+    aov: 412,
+    rebook: 24,
+    email: 18.5
+  },
+  activity: [
+    { time: '10 mins ago', msg: 'Product Rec Engine re-ranked Top Arrivals.' },
+    { time: '1 hour ago', msg: 'New campaign "Sustainable September" drafted.' },
+    { time: '3 hours ago', msg: 'Workshop outreach sent to Zayed University.' },
+    { time: '5 hours ago', msg: 'NYU Abu Dhabi requested a custom workshop proposal.' },
+    { time: 'Yesterday', msg: 'Corporate bulk order from Emaar Group processed.' },
+    { time: '2 days ago', msg: 'New B2B segment "Design Agencies" created in CRM.' }
+  ],
+  products: [
+    { name: 'Raw Selvedge Slim', cat: 'Jeans', conv: 5.8, rev: 12400, signals: ['browsing', 'purchase', 'wishlist'] },
+    { name: 'Overdyed Trucker', cat: 'Jackets', conv: 4.2, rev: 8900, signals: ['browsing', 'purchase'] },
+    { name: 'Upcycled Tote', cat: 'Accessory', conv: 3.9, rev: 3200, signals: ['browsing'] },
+    { name: 'Worker Pant', cat: 'Trousers', conv: 3.5, rev: 7100, signals: ['purchase', 'wishlist'] },
+    { name: 'Denim Kimono', cat: 'Outerwear', conv: 2.1, rev: 4500, signals: ['wishlist'] },
+    { name: 'Patchwork Overshirt', cat: 'Outerwear', conv: 4.5, rev: 6200, signals: ['browsing', 'purchase'] },
+    { name: 'Denim Bucket Hat', cat: 'Accessory', conv: 2.8, rev: 1500, signals: ['browsing'] }
+  ],
+  workshops: [
+    { id: 1, name: 'American University of Sharjah', type: 'University', last: 'Jan 2026', conf: 94, status: 'Pending Outreach', tags: ['sustainability', 'high-engagement'] },
+    { id: 2, name: 'Chalhoub Group HQ', type: 'Corporate', last: 'Mar 2025', conf: 88, status: 'Pending Outreach', tags: ['innovation', 'team-building'] },
+    { id: 3, name: 'Zayed University', type: 'University', last: 'Jun 2026', conf: 92, status: 'Contacted', tags: ['upcycling', 'recurring'] },
+    { id: 4, name: 'Dubai Design District', type: 'Corporate', last: 'Never', conf: 82, status: 'Pending Outreach', tags: ['new-lead', 'design-focus'] },
+    { id: 5, name: 'NYU Abu Dhabi', type: 'University', last: 'Nov 2025', conf: 96, status: 'Pending Outreach', tags: ['research', 'textile-innovation'] },
+    { id: 6, name: 'Emaar Properties', type: 'Corporate', last: 'Never', conf: 75, status: 'Contacted', tags: ['gift-experience', 'large-scale'] },
+    { id: 7, name: 'Heriot-Watt University', type: 'University', last: 'Feb 2026', conf: 89, status: 'Pending Outreach', tags: ['fashion-design', 'workshop-series'] },
+    { id: 8, name: 'Majid Al Futtaim', type: 'Corporate', last: 'Dec 2025', conf: 91, status: 'Pending Outreach', tags: ['sustainability-goals', 'team-impact'] }
+  ],
+  campaigns: [
+    { id: 1, name: 'Summer Solstice', segment: 'All Customers', subject: 'Long days, cool denim.', status: 'Sent' },
+    { id: 2, name: 'Workshop Recap', segment: 'Workshop Attendees', subject: 'Keep the craft alive.', status: 'Scheduled' },
+    { id: 3, name: 'B2B: Corporate Gifting', segment: 'Corporate Partners', subject: 'Gifts with impact.', status: 'Draft' },
+    { id: 4, name: 'Campus Ambassors 2026', segment: 'University Students', subject: 'Lead the denim revolution.', status: 'Draft' }
+  ]
+};
+
+// --- TAB NAVIGATION ---
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tabId = btn.getAttribute('data-tab');
+    switchTab(tabId);
+  });
+});
+
+function switchTab(tabId) {
+  state.activeTab = tabId;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === tabId));
+}
+
+// --- DASHBOARD ---
+function renderActivity() {
+  const feed = document.getElementById('activity-feed');
+  feed.innerHTML = state.activity.map(item => `
+    <li class="feed-item">
+      <div class="feed-time">${item.time}</div>
+      <div>${item.msg}</div>
+    </li>
+  `).join('');
+}
+
+function addActivity(msg) {
+  state.activity.unshift({ time: 'Just now', msg });
+  renderActivity();
+}
+
+function updateSystemStatus(sys, active) {
+  state.systems[sys] = active;
+  const overlay = document.getElementById(`${sys}-paused`);
+  if (overlay) overlay.style.display = active ? 'none' : 'flex';
+  
+  const statusPill = active ? 'Active' : 'Paused';
+  addActivity(`${sys.charAt(0).toUpperCase() + sys.slice(1)} System marked as ${statusPill}.`);
+}
+
+// --- PRODUCT RECS ---
+function renderProducts() {
+  const activeSignals = Array.from(document.querySelectorAll('.signal-check:checked')).map(c => c.value);
+  const sorted = [...state.products].sort((a, b) => {
+    const scoreA = a.signals.filter(s => activeSignals.includes(s)).length * a.conv;
+    const scoreB = b.signals.filter(s => activeSignals.includes(s)).length * b.conv;
+    return scoreB - scoreA;
+  });
+
+  const body = document.getElementById('product-body');
+  body.innerHTML = sorted.map(p => `
+    <tr>
+      <td>${p.name}</td>
+      <td>${p.cat}</td>
+      <td>${p.conv}%</td>
+      <td>AED ${p.rev.toLocaleString()}</td>
+    </tr>
+  `).join('');
+}
+
+function toggleProductTable() {
+  const like = document.getElementById('toggle-like').checked;
+  const arrivals = document.getElementById('toggle-new').checked;
+  const active = like || arrivals;
+  document.getElementById('product-paused').style.display = active ? 'none' : 'flex';
+}
+
+function rerankProducts() {
+    renderProducts();
+}
+
+function retrainProductAI() {
+  const btn = document.getElementById('retrain-btn');
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span> Training...`;
+
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+    document.getElementById('last-trained').textContent = 'just now';
+    state.products.sort(() => Math.random() - 0.5); // Randomize for visual effect
+    renderProducts();
+    addActivity('Product Recommendation Engine retrained and re-ranked.');
+  }, 1500);
+}
+
+// --- WORKSHOP RECS ---
+let currentWorkshopFilter = 'all';
+
+function renderWorkshops() {
+  const body = document.getElementById('workshop-body');
+  const filtered = state.workshops.filter(w => currentWorkshopFilter === 'all' || w.type === currentWorkshopFilter);
+  
+  body.innerHTML = filtered.map(w => `
+    <tr>
+      <td>${w.name}</td>
+      <td>${w.type}</td>
+      <td>${w.last}</td>
+      <td>${w.conf}%</td>
+      <td><span class="status-pill ${w.status === 'Contacted' ? 'status-contacted' : 'status-pending'}">${w.status}</span></td>
+      <td>
+        <button class="btn-sml btn-outline-sml" onclick="viewWorkshopDetail(${w.id})">View</button>
+        <button class="btn-sml" ${w.status === 'Contacted' ? 'disabled' : ''} onclick="sendOutreach(${w.id})">Send Outreach</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterWorkshops(type) {
+  currentWorkshopFilter = type;
+  document.querySelectorAll('#workshop-filters button').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.includes(type) || (type === 'all' && btn.textContent === 'All'));
+  });
+  renderWorkshops();
+}
+
+function viewWorkshopDetail(id) {
+    const w = state.workshops.find(x => x.id === id);
+    document.getElementById('modal-inst-name').textContent = w.name;
+    const list = document.getElementById('reasons-list');
+    list.innerHTML = getAIWorkshopReasons(w).map(r => `<li>${r}</li>`).join('');
+    document.getElementById('workshop-detail-modal').style.display = 'flex';
+}
+
+function closeWorkshopModal() {
+    document.getElementById('workshop-detail-modal').style.display = 'none';
+}
+
+function getAIWorkshopReasons(w) {
+    // Isolated function for future AI call
+    const reasons = [
+        `High historical engagement with ${w.tags[0]} content.`,
+        `Last interaction was in ${w.last}, fitting our 6-month re-engagement model.`,
+        `Institutional focus on ${w.tags[1]} aligns with our new curriculum.`
+    ];
+    return reasons;
+}
+
+function sendOutreach(id) {
+    const w = state.workshops.find(x => x.id === id);
+    w.status = 'Contacted';
+    renderWorkshops();
+    addActivity(`Outreach sent to ${w.name}.`);
+}
+
+function bulkOutreach() {
+    state.workshops.forEach(w => {
+        if (w.status === 'Pending Outreach') w.status = 'Contacted';
+    });
+    renderWorkshops();
+    addActivity(`Bulk outreach sent to all pending institutions.`);
+}
+
+// --- EMAIL & CRM ---
+function renderCampaigns() {
+    const body = document.getElementById('campaign-body');
+    const sorted = [...state.campaigns].reverse();
+    body.innerHTML = sorted.map(c => `
+        <tr>
+            <td>${c.name}</td>
+            <td>${c.segment}</td>
+            <td style="font-style: italic; color: var(--grey-500);">"${c.subject}"</td>
+            <td><span class="status-pill ${c.status.toLowerCase() === 'sent' ? 'status-contacted' : (c.status === 'Draft' ? 'status-pending' : 'status-active')}">${c.status}</span></td>
+            <td>
+                ${c.status === 'Draft' ? `<button class="btn-sml" onclick="updateCampaignStatus(${c.id}, 'Scheduled')">Schedule</button>` : ''}
+                ${c.status === 'Scheduled' ? `<button class="btn-sml" onclick="updateCampaignStatus(${c.id}, 'Sent')">Send Now</button>` : ''}
+                ${c.status === 'Sent' ? `<button class="btn-sml btn-outline-sml" disabled>Archived</button>` : ''}
+            </td>
+        </tr>
+    `).join('');
+}
+
+function openCampaignModal() {
+    document.getElementById('campaign-modal').style.display = 'flex';
+}
+
+function closeCampaignModal() {
+    document.getElementById('campaign-modal').style.display = 'none';
+}
+
+function generateCampaign() {
+    const name = document.getElementById('camp-name').value;
+    const segment = document.getElementById('camp-segment').value;
+    const theme = document.getElementById('camp-theme').value;
+
+    if(!name || !theme) return alert('Please fill in campaign name and theme.');
+
+    const copy = draftCampaignCopy(segment, theme);
+    const newCamp = {
+        id: Date.now(),
+        name: name,
+        segment: segment,
+        subject: copy.subject,
+        body: copy.body,
+        status: 'Draft'
+    };
+
+    state.campaigns.push(newCamp);
+    renderCampaigns();
+    closeCampaignModal();
+    addActivity(`New campaign "${name}" generated with AI.`);
+}
+
+function draftCampaignCopy(segment, theme) {
+    // Isolated function for future LLM API call
+    return {
+        subject: `Zaish Denim x ${theme.split(' ')[0]}: Crafted for you.`,
+        body: `Hello ${segment === 'All Customers' ? 'friend' : segment}, we noticed you're into ${theme}. Check out our new collection designed with intent.`
+    };
+}
+
+function updateCampaignStatus(id, status) {
+    const c = state.campaigns.find(x => x.id === id);
+    c.status = status;
+    renderCampaigns();
+    addActivity(`Campaign "${c.name}" status updated to ${status}.`);
+}
+
+// --- INITIALIZE ---
+renderActivity();
+renderProducts();
+renderWorkshops();
+renderCampaigns();
+
+</script>
+</body>
+</html>
